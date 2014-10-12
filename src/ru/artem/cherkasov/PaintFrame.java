@@ -25,7 +25,7 @@ import java.util.List;
 
 public class PaintFrame extends JFrame {
 
-    List<Line2D.Float> lines = new ArrayList<>();
+    List<LineColor> linesColor = new ArrayList<LineColor>();
     Point lastPoint;
     JPanel pane = new DrawPane();
     Color color = Color.RED;
@@ -47,23 +47,34 @@ public class PaintFrame extends JFrame {
 
     // class to handle mouse action from DrawPane
     private class DrawListener extends MouseAdapter {
+    	
             @Override
             public void mouseDragged(MouseEvent e) {
+            	
                 super.mouseDragged(e);
+                
                 if (lastPoint == null) {
+                	
                     lastPoint = e.getPoint();
                     return;
+                    
                 }
-                lines.add(new Line2D.Float(lastPoint, e.getPoint()));
+                
+                LineColor lineColor = new LineColor();
+                lineColor.setLine2DFloat(new Line2D.Float(lastPoint, e.getPoint()));
+                lineColor.setColor(color);
+                linesColor.add(lineColor);
                 lastPoint = e.getPoint();
-
                 pane.repaint();
+                
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
+            	
                 super.mouseReleased(e);
                 lastPoint = null;
+                
             }
             
     }
@@ -74,10 +85,12 @@ public class PaintFrame extends JFrame {
             // delete line below :)
             super.paintComponent(g);
             Graphics2D g2d = (Graphics2D) g;
-            g2d.setColor(color);
             
-            for (Line2D.Float line : lines) {
-               g2d.draw(line);
+            for (LineColor lc : linesColor) {
+            	
+            	g2d.setColor(lc.getColor());
+            	g2d.draw(lc.getLine2DFloat());
+               
             }
             
         }
@@ -85,6 +98,7 @@ public class PaintFrame extends JFrame {
     }
 
     class ButtonPanel extends JPanel implements ActionListener {
+    	
         JButton btnRed;
         JButton btnBlue;
         JButton btnGreen;
@@ -96,6 +110,7 @@ public class PaintFrame extends JFrame {
         private static final String BLACK_BTN = "black_btn";
 
         public ButtonPanel() {
+        	
             setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
             btnRed = new JButton("red");
             btnRed.setBackground(Color.RED);
@@ -129,22 +144,22 @@ public class PaintFrame extends JFrame {
         	
             String command = e.getActionCommand();
 
-            switch (command) {
-            
-                case RED_BTN:
-                    color = Color.RED;
-                    break;
-                case BLUE_BTN:
-                    color = Color.BLUE;
-                    break;
-                case GREEN_BTN:
-                    color = Color.GREEN;
-                    break;
-                case BLACK_BTN:
-                    color = Color.BLACK;
-                    break;
-                    
-            }
+			switch (command) {
+			
+			    case RED_BTN:
+			        color = Color.RED;
+			        break;
+			    case BLUE_BTN:
+			        color = Color.BLUE;
+			        break;
+			    case GREEN_BTN:
+			        color = Color.GREEN;
+			        break;
+			    case BLACK_BTN:
+			        color = Color.BLACK;
+			        break;
+			        
+			}
             
         }
         
@@ -154,8 +169,11 @@ public class PaintFrame extends JFrame {
     	
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+            	
                 createAndShowGUI();
+                
             }
+            
         });
         
     }
@@ -166,4 +184,5 @@ public class PaintFrame extends JFrame {
         frame.setVisible(true);
         
     }
+    
 }
